@@ -1,0 +1,26 @@
+services:
+  unitree_rl_u22_cuda12_6_3:
+    build:
+      dockerfile: docker/Dockerfile
+    container_name: unitree_rl_u22_cuda12_6_3
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [utility, compute, video, display]
+    volumes:
+      - ./rl_ws:/root/rl_ws
+      # to tansport X11 application (require xhost local:)
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - $HOME/.Xauthority:/root/.Xauthority:ro"
+    tty: true
+    stdin_open: true
+    environment:
+      # to transport X11 application window
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+    # network_mode: host
+    privileged: false
+    command: bash
